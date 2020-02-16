@@ -2,15 +2,12 @@ package web
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
 
 	"github.com/rs/zerolog/log"
 
-	"bitbucket.org/zumata_scripts/skynettravel/pkg/errs"
+	"github.com/zumatande/skygo/pkg/errs"
 )
-
-var errFmt = `{error:"%v"}`
 
 // HTTPService is generic contract domain services
 // are prescribed to implement so that error handling
@@ -30,21 +27,31 @@ func (h *Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		switch err := err.(type) {
 		case errs.ErrRequest:
-			writeErrorJSON(w, err, http.StatusBadRequest)
+			WriteErrorJSON(w, err, nil, http.StatusBadRequest)
 		case errs.ErrDomain:
-			writeErrorJSON(w, err, http.StatusUnprocessableEntity)
+			WriteErrorJSON(w, err, nil, http.StatusUnprocessableEntity)
 		case errs.ErrInternal:
-			writeErrorJSON(w, err, http.StatusInternalServerError)
+			WriteErrorJSON(w, err, nil, http.StatusInternalServerError)
 		default:
 			log.Error().Err(err).Str("url", r.URL.Path).Msg("untyped error")
-			writeErrorJSON(w, err, http.StatusInternalServerError)
+			WriteErrorJSON(w, err, nil, http.StatusInternalServerError)
 		}
 	}
 }
 
-func writeErrorJSON(w http.ResponseWriter, err error, httpStatus int) {
+// WriteErrorJSON writes error response in JSON
+func WriteErrorJSON(w http.ResponseWriter, err error, details interface{}, httpStatus int) {
 	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(httpStatus)
-	errStr := fmt.Sprintf(errFmt, err.Error())
-	w.Write(json.RawMessage(errStr))
+	resp := make(map[string]interface{})
+	resp["error"] = err.Error()
+	if details != nil {
+		resp["details"] = details
+	} else {
+		resp["details"] = []interface{}{}
+	}
+
+	// ignore error here and allow panic; resolve by fixing underlying fault
+	// rather than by creating error handler for error handler for error handler
+	jm, _ := json.Marshal(resp)
+	w.Write(jm)
 }
