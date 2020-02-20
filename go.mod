@@ -12,7 +12,10 @@ require (
 	github.com/json-iterator/go v1.1.9
 	github.com/justinas/alice v1.2.0
 	github.com/microcosm-cc/bluemonday v1.0.2 // indirect
+	github.com/onsi/ginkgo v1.12.0 // indirect
+	github.com/onsi/gomega v1.9.0 // indirect
 	github.com/philhofer/fwd v1.0.0 // indirect
+	github.com/pkg/errors v0.8.1
 	github.com/rs/cors v1.7.0
 	github.com/rs/zerolog v1.18.0
 	github.com/spf13/viper v1.6.2

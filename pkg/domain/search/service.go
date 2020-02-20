@@ -11,19 +11,14 @@ type Service interface {
 	Search(context.Context, *data.SearchRequest) (*data.SearchBasic, error)
 }
 
-// worker is function type simulating specific search behaviour
-type worker func(context.Context, *data.SearchRequest) (*data.SearchBasic, error)
-
-// server implements Search service. It maps property codes
+// server implements Search service. It maps properties
 // to functions that simulate certain behaviour
 type server struct {
-	mapper map[string]worker
-	generic worker
+	mapper map[string]Generator
 }
 
 // Search ...
 func (s *server) Search(ctx context.Context, req *data.SearchRequest) (*data.SearchBasic, error) {
 
-	return s.generic(ctx, req)
+	return nil, nil
 }
-

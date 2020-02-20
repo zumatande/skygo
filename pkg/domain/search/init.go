@@ -1,18 +1,17 @@
 package search
 
-import (
-	"context"
-
-	"github.com/Zumata/v3-common/data"
-)
-
-var defaultService Service
+var defaultHTTPService HTTP
 
 func init() {
-	defaultService = &server{
-		mapper: map[string]worker{},
-		generic: func(_ context.Context, _ *data.SearchRequest) (*data.SearchBasic, error) {
-			return &data.SearchBasic{}, nil
+	defaultHTTPService = HTTP{
+		service: &server{
+			mapper: make(map[string]Generator),
 		},
 	}
+}
+
+// DefaultHTTPService returns default http service allowing ease of
+// spawning service without directly exposing global variable
+func DefaultHTTPService() HTTP {
+	return defaultHTTPService
 }

@@ -25,7 +25,8 @@ func InitRoutes(router *mux.Router) {
 
 	// initialize handlers
 	shsrv := search.NewHTTPService(nil)
-	router.Handle("/search", apiKeyChain.Then(&web.Handler{shsrv})).Methods(http.MethodPost)
+	searchHandler := &web.Handler{Service: shsrv}
+	router.Handle("/search", apiKeyChain.Then(searchHandler)).Methods(http.MethodPost)
 
 	// router.Handle("/search", apiKeyChain.Then(insert_handler_here)).Methods(http.MethodPost)
 	router.HandleFunc("/healthcheck", func(w http.ResponseWriter, _ *http.Request) { w.Write([]byte(http.StatusText(http.StatusOK))) }).Methods(http.MethodGet)
