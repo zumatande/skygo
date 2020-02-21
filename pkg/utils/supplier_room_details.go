@@ -25,8 +25,8 @@ var (
 	}
 )
 
-// GetSupplierRoomDetails ...
-func GetSupplierRoomDetails(roomType string, bedCount int) data.SupplierRoomDetails {
+// NewSupplierRoomDetails ...
+func NewSupplierRoomDetails(roomType string, bedCount int) data.SupplierRoomDetails {
 	// TODO: parameterize type of bed
 	desc := fmt.Sprintf("%v - %v Queen Bed", roomType, bedCount)
 
@@ -41,4 +41,9 @@ func GetSupplierRoomDetails(roomType string, bedCount int) data.SupplierRoomDeta
 		RoomType:     roomType,
 		RoomTypeCode: "roomType888",
 	}
+}
+
+// CommonSupplierRoomDetails ...
+func CommonSupplierRoomDetails() map[string]data.SupplierRoomDetails {
+	return commonSupplierRoomDetails
 }

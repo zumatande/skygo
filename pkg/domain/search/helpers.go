@@ -25,3 +25,19 @@ func generateDailyPrices(basePrice data.CurrencyValue, checkIn time.Time, nights
 
 	return prices
 }
+
+// get room surcharge for common supplier room details,
+// if not in common suppliers, returns input surcharge
+func getRoomSurcharge(room data.SupplierRoomDetails, surcharge ...float64) float64 {
+	switch room.RoomType {
+	case "STANDARD":
+		return 1.0
+	case "DELUXE":
+		return 1.5
+	default:
+		if surcharge == nil {
+			return 1.0
+		}
+		return surcharge[0]
+	}
+}
