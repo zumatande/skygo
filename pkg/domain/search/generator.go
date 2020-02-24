@@ -29,28 +29,25 @@ type Generator interface {
 
 type serviceFunc func(context.Context, *data.SearchRequest) (*data.SearchBasic, error)
 
-type modifier func(*data.SearchBasic, error) (*data.SearchBasic, error)
+type modifier func(*data.SearchBasic) error
 
 type generator struct {
-	modifiers     []modifier
-	hotelID       string
 	baseRate      data.CurrencyValue
-	supplierRooms map[string]data.SupplierRoomDetails
 	cpGen         utils.CPGenerator
+	hotelID       string
+	modifiers     []modifier
+	supplierRooms map[string]data.SupplierRoomDetails
 }
 
 func (g generator) Package(ctx context.Context, req *data.SearchRequest) (*data.SearchBasic, error) {
-	// parse request
-	// get bed count
-	// get room count
-
-	nights := req.Params.CheckOutDate.Day() - req.Params.CheckInDate.Day()
+	nights := utils.GetNightsCount(req.Params.CheckInDate, req.Params.CheckOutDate)
+	bedCount := utils.GetBedCount(req)
 	breakDownPrices := generateDailyPrices(g.baseRate, req.Params.CheckInDate, nights)
-
 	var sumValue float64
 	for _, p := range breakDownPrices {
 		sumValue += p.Price.Value
 	}
+
 	supplierSellRate := data.CurrencyValue{
 		Currency: g.baseRate.Currency,
 		Value:    sumValue * roomCount,
